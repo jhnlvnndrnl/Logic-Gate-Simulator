@@ -6,7 +6,7 @@ using namespace std;
 // BASE CLASS
 class LogicGate {
 protected:
-    string name;
+    string name;    
     string formula;
 
 public:
@@ -45,7 +45,7 @@ public:
         cout << R"(
 
         A --|‾‾‾‾‾‾‾‾\
-                    )--- A.B
+                        )--- A.B
         B --|________/
 
         )";
@@ -290,7 +290,20 @@ int main() {
 
     do {
         showMenu(userName);
+
         cin >> mode;
+
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Invalid input!\n";
+            continue;
+        }
+
+        if (mode < 1 || mode > 3) {
+            cout << "Invalid Choice!\n";
+            continue;
+        }
 
         if (mode == 3) {
             cout << "\nGoodbye!\n";
@@ -300,9 +313,25 @@ int main() {
         int gateChoice;
 
         cout << "\nSelect Gate:\n";
-        cout << "1 AND\n2 OR\n3 NOT\n4 NAND\n5 NOR\n6 XOR\n7 XNOR\n";
+        cout << "1 AND\n2 OR\n3 NOT\n4 NAND\n5 NOR\n6 XOR\n7 XNOR\n8 Main Menu\n";
         cout << "Choice: ";
         cin >> gateChoice;
+
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Invalid gate input!\n";
+            continue;
+        }
+
+        if (gateChoice == 8) {
+            continue;
+        }
+
+        if (gateChoice < 1 || gateChoice > 7) {
+            cout << "Invalid gate!\n";
+            continue;
+        }
 
         LogicGate* gate = nullptr;
 
@@ -314,31 +343,38 @@ int main() {
             case 5: gate = new NORGate(); break;
             case 6: gate = new XORGate(); break;
             case 7: gate = new XNORGate(); break;
-            default:
-                cout << "Invalid gate!\n";
-                continue;
         }
 
-        // MODE 1: DEFINITION
         if (mode == 1) {
+
             cout << "\n------------------------------------\n";
             gate->showInfo();
             gate->displaySymbol();
             gate->explain();
             gate->truthTable();
             cout << "------------------------------------\n";
-        }
 
-        // MODE 2: COMPUTATION
-        else if (mode == 2) {
+        } else if (mode == 2) {
 
             int a, b;
 
             cout << "Enter A (0 or 1): ";
             cin >> a;
 
+            if (cin.fail() || (a != 0 && a != 1)) {
+                cout << "Invalid input!\n";
+                delete gate;
+                continue;
+            }
+
             cout << "Enter B (0 or 1): ";
             cin >> b;
+
+            if (cin.fail() || (b != 0 && b != 1)) {
+                cout << "Invalid input!\n";
+                delete gate;
+                continue;
+            }
 
             cout << "\n------------------------------------\n";
             gate->showInfo();
